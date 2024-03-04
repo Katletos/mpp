@@ -32,15 +32,15 @@ public static class FloatExtensions
     {
         var arr = BitConverter
             .GetBytes(number)
-            .Reverse()
             .Select(x => Convert.ToString(x, 2))
-            .Select(x => x.PadLeft(8, '0')).ToArray();
+            .Select(x => x.PadLeft(8, '0'))
+            .ToArray();
 
         var builder = new StringBuilder();
-        builder.Append(arr[0]);
-        builder.Append(arr[1]);
-        builder.Append(arr[2]);
         builder.Append(arr[3]);
+        builder.Append(arr[2]);
+        builder.Append(arr[1]);
+        builder.Append(arr[0]);
 
         return builder.ToString();
     }
