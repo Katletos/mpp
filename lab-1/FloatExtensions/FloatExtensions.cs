@@ -22,7 +22,9 @@ public static class FloatExtensions
         {
             for (var i = 0; i < 8; ++i)
             {
-                chars[8 * n + i] = (bytes[n] >> i & 1) == 1 ? '1' : '0';
+                chars[8 * n + i] = (bytes[n] >> i & 1) == 1 
+					? '1'
+					: '0';
             }
         }
         
