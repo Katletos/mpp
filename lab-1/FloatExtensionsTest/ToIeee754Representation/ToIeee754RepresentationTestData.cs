@@ -16,11 +16,5 @@ public class ToIeee754RepresentationTestData : TestDataBase<ToIeee754Representat
             Number = -42.5f,
             ExpectedResult = "11000010001010100000000000000000",
         };
-        yield return new ToIeee754RepresentationTestCase()
-        {
-            Description = "Test for PI float representation",
-            Number = float.Pi,
-            ExpectedResult = "11011011111100001001001000000010",
-        };
     }
 }

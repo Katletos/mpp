@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace lab_1;
 
@@ -12,18 +13,16 @@ public static class FloatExtensions
     /// </summary>
     /// <param name="number">The value to represent.</param>￥
     /// <returns>Return char[].</returns>
-    public unsafe static char[] ToIeee754Representation(this float number)
+    public static char[] ToIeee754Representation(this float number)
     {
         var chars = new char[32];
-        var bytes = stackalloc byte[sizeof(float)];
-        Unsafe.As<byte, float>(ref bytes[0]) = number;
         
-        for (var n = 0; n < 4; ++n)
+        var val = Unsafe.BitCast<float, uint>(number);
+        for (var n = 0; n < 32; ++n)
         {
-            for (var i = 0; i < 8; ++i)
-            {
-                chars[8 * n + i] = (bytes[n] >> i & 1) == 1 ? '1' : '0';
-            }
+            chars[31 - n] = (val >> n & 1) == 1 
+                ? '1'
+                : '0';
         }
         
         return chars;
@@ -31,10 +30,18 @@ public static class FloatExtensions
     
     public static string ToIeee754RepresentationLinq(this float number)
     {
-        return BitConverter
+        var arr = BitConverter
             .GetBytes(number)
+            .Reverse()
             .Select(x => Convert.ToString(x, 2))
-            .Select(x => x.PadLeft(8, '0'))
-            .ToString()!;
+            .Select(x => x.PadLeft(8, '0')).ToArray();
+
+        var builder = new StringBuilder();
+        builder.Append(arr[0]);
+        builder.Append(arr[1]);
+        builder.Append(arr[2]);
+        builder.Append(arr[3]);
+
+        return builder.ToString();
     }
 }
