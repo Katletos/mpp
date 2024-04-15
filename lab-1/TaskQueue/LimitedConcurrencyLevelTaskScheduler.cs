@@ -47,7 +47,6 @@ public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
             _currentThreadIsProcessingItems = true;
             try
             {
-                // Process all available items in the queue.
                 while (true)
                 {
                     Task item;
@@ -67,7 +66,7 @@ public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
                     }
 
                     // Execute the task we pulled out of the queue
-                    base.TryExecuteTask(item);
+                    TryExecuteTask(item);
                 }
             }
             // We're done processing items on the current thread

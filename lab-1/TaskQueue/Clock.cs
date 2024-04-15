@@ -2,10 +2,9 @@ namespace TaskQueue;
 
 public class Clock
 {
-    private event EventHandler OnTimer;
+    public event EventHandler? OnTimer;
     private readonly TimeSpan _duration;
-    private Timer _timer;
-
+    
     public Clock(TimeSpan duration)
     {
         _duration = duration;
@@ -13,10 +12,15 @@ public class Clock
 
     public void Start()
     {
+        new Thread(StartClock).Start();
     }
 
-    public void Invoke()
-    {
-        
+    protected virtual void StartClock()
+    {   
+        Thread.Sleep(_duration);
+        if (OnTimer is not null)
+        {
+            OnTimer.Invoke(this, EventArgs.Empty);
+        }
     }
 }
