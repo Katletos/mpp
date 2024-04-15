@@ -22,7 +22,6 @@ public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
         _maxDegreeOfParallelism = maxDegreeOfParallelism;
     }
 
-    // Queues a task to the scheduler.
     protected sealed override void QueueTask(Task task)
     {
         // Add the task to the list of tasks to be processed.  If there aren't enough

@@ -16,7 +16,7 @@ public class Clock
         _timer = new Timer(_duration);
     }
 
-    pub;lic void Invoke()
+    public void Invoke()
     {
         
     }
