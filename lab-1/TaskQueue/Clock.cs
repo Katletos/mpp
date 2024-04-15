@@ -13,7 +13,6 @@ public class Clock
 
     public void Start()
     {
-        _timer = new Timer(_duration);
     }
 
     public void Invoke()
