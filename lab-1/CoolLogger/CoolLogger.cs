@@ -12,7 +12,7 @@ public class CoolLogger
       _logs = new List<string>();
       _logs.EnsureCapacity(logsBufSize);
       _logsBufSize = logsBufSize;
-      _timer = new Timer(WriteLogsOnTimer, null, TimeSpan.Zero, timeSpan);
+      _timer = new Timer(WriteLogsOnTimer, null, timeSpan, timeSpan);
       
       ArgumentNullException.ThrowIfNull(path);
       try
@@ -38,6 +38,7 @@ public class CoolLogger
          
          _logs.Add(logMessage);
       }
+      Console.WriteLine("log added");
    }
 
    private void WriteLogsOnTimer(object? state)
@@ -50,10 +51,17 @@ public class CoolLogger
    
    private void WriteToDisk()
    {
+      if (_logs.Count is 0)
+      {
+         return;
+      }
+      
       try
       {
-         _logs.ForEach(x => _writer.Write(x));   
+         _logs.ForEach(x => _writer.WriteLine(x));  
+         _writer.Flush();
          _logs.Clear();
+         Console.WriteLine("write to disk");
       }
       catch (Exception e)
       {

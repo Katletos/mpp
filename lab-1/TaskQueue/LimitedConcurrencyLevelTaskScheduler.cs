@@ -83,7 +83,6 @@ public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
         // If the task was previously queued, remove it from the queue
         if (taskWasPreviouslyQueued)
         {
-            // Try to run the task.
             if (TryDequeue(task))
             {
                 return TryExecuteTask(task);
