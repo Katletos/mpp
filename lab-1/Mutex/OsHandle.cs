@@ -1,14 +1,13 @@
-using System.Reflection.Metadata;
 using Microsoft.Win32.SafeHandles;
 
 namespace Mutex;
 
-public sealed class PoseHandle : IDisposable
+public sealed class OsHandle : IDisposable
 {
     private bool _disposed;
     private readonly SafeFileHandle _handle;
 
-    public PoseHandle(SafeFileHandle handle)
+    public OsHandle(SafeFileHandle handle)
     {
         _handle = handle;
     }
@@ -16,6 +15,7 @@ public sealed class PoseHandle : IDisposable
     public SafeFileHandle GetHandle()
     {
         if (!_disposed) return _handle;
+
         throw new ObjectDisposedException(ToString());
     }
 
@@ -37,7 +37,7 @@ public sealed class PoseHandle : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    ~PoseHandle()
+    ~OsHandle()
     {
         Dispose(false);
     }

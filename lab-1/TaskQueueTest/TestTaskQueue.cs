@@ -9,9 +9,9 @@ public class TestTaskQueue
     public void Test1()
     {
         var lcts = new LimitedConcurrencyLevelTaskScheduler(2);
-        TaskFactory factory = new TaskFactory(lcts);
+        var factory = new TaskFactory(lcts);
         var tasks = new List<Task<int>>();
-        CancellationTokenSource cts = new CancellationTokenSource();
+        var cts = new CancellationTokenSource();
         List<int> result = [5, 5, 5, 5, 5];
         
         for (int i = 0; i < 5; i++) {

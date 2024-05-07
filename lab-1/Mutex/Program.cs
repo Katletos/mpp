@@ -28,7 +28,7 @@ void IncrementSharedResource(object? state)
 
 var file = File.Open("./test.txt", FileMode.Create);
 
-using var poseHandle = new PoseHandle(file.SafeFileHandle);
+using var poseHandle = new OsHandle(file.SafeFileHandle);
 Console.WriteLine("Handle value: " + poseHandle.GetHandle().IsClosed);
 poseHandle.ReleaseHandle();
 Console.WriteLine("Handle value: " + poseHandle.GetHandle().IsClosed);

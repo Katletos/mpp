@@ -1,31 +1,27 @@
+using System.Diagnostics;
+
 namespace TaskQueue;
 
 public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
 {
     // Indicates whether the current thread is processing work items.
-    [ThreadStatic]
-    private static bool _currentThreadIsProcessingItems;
+    [ThreadStatic] private static bool _currentThreadIsProcessingItems;
 
-    // The list of tasks to be executed
-    private readonly LinkedList<Task> _tasks = new LinkedList<Task>(); // protected by lock(_tasks)
+    private readonly LinkedList<Task> _tasks = new(); // protected by lock(_tasks)
 
-    // The maximum concurrency level allowed by this scheduler.
     private readonly int _maxDegreeOfParallelism;
 
-    // Indicates whether the scheduler is currently processing work items.
-    private int _delegatesQueuedOrRunning = 0;
+    private int _delegatesQueuedOrRunning;
 
-    // Creates a new instance with the specified degree of parallelism.
     public LimitedConcurrencyLevelTaskScheduler(int maxDegreeOfParallelism)
     {
-        if (maxDegreeOfParallelism < 1) throw new ArgumentOutOfRangeException("maxDegreeOfParallelism");
+        if (maxDegreeOfParallelism < 1) throw new ArgumentOutOfRangeException(nameof(maxDegreeOfParallelism));
+
         _maxDegreeOfParallelism = maxDegreeOfParallelism;
     }
 
     protected sealed override void QueueTask(Task task)
     {
-        // Add the task to the list of tasks to be processed.  If there aren't enough
-        // delegates currently queued or running to process tasks, schedule another.
         lock (_tasks)
         {
             _tasks.AddLast(task);
@@ -60,17 +56,18 @@ public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
                             break;
                         }
 
-                        // Get the next item from the queue
+                        Debug.Assert(_tasks.First != null, "_tasks.First != null");
                         item = _tasks.First.Value;
                         _tasks.RemoveFirst();
                     }
 
-                    // Execute the task we pulled out of the queue
                     TryExecuteTask(item);
                 }
             }
-            // We're done processing items on the current thread
-            finally { _currentThreadIsProcessingItems = false; }
+            finally
+            {
+                _currentThreadIsProcessingItems = false;
+            }
         }, null);
     }
 
@@ -87,23 +84,13 @@ public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
             {
                 return TryExecuteTask(task);
             }
-            
+
             return false;
         }
-        
+
         return TryExecuteTask(task);
     }
 
-    // Attempt to remove a previously scheduled task from the scheduler.
-    protected sealed override bool TryDequeue(Task task)
-    {
-        lock (_tasks) return _tasks.Remove(task);
-    }
-
-    // Gets the maximum concurrency level supported by this scheduler.
-    public sealed override int MaximumConcurrencyLevel => _maxDegreeOfParallelism;
-
-    // Gets an enumerable of the tasks currently scheduled on this scheduler.
     protected sealed override IEnumerable<Task> GetScheduledTasks()
     {
         bool lockTaken = false;
