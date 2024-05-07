@@ -1,35 +1,33 @@
+using System.Reflection.Metadata;
+using Microsoft.Win32.SafeHandles;
+
 namespace Mutex;
 
-public class PoseHandle : IDisposable
+public sealed class PoseHandle : IDisposable
 {
-    private IntPtr _handle;
-    private bool _disposed = false;
+    private bool _disposed;
+    private readonly SafeFileHandle _handle;
 
-    public PoseHandle(IntPtr initialHandle)
+    public PoseHandle(SafeFileHandle handle)
     {
-        _handle = initialHandle;
+        _handle = handle;
     }
 
-    public IntPtr Handle
+    public SafeFileHandle GetHandle()
     {
-        get
-        {
-            if (!_disposed) return _handle;
-
-            throw new ObjectDisposedException(ToString());
-        }
-
-        set { _handle = value; }
+        if (!_disposed) return _handle;
+        throw new ObjectDisposedException(ToString());
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed) return;
 
-        if (disposing){}
-        CloseHandle(_handle);
-        _handle = IntPtr.Zero;
+        if (disposing)
+        {
+        }
 
+        _handle.Dispose();
         _disposed = true;
     }
 
@@ -48,6 +46,4 @@ public class PoseHandle : IDisposable
     {
         Dispose();
     }
-
-    private extern static bool CloseHandle(IntPtr hObject);
 }

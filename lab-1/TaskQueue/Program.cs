@@ -36,12 +36,11 @@ using TaskQueue;
 var clock = new Clock(TimeSpan.FromSeconds(5));
 clock.OnTimer += (sender, eventArgs) =>
 {
-    Console.WriteLine("Tick");
+    Console.WriteLine("Tick 1");
 };
 
-clock.OnTimer += (sender, eventArgs) =>
-{
-    Console.WriteLine("Tick");
+clock.OnTimer += (sender, eventArgs) => {
+    Console.WriteLine("Tick 2");
 };
 clock.Start();
 Console.ReadLine();
