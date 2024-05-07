@@ -11,11 +11,7 @@ for (int i = 0; i < numThreads; i++)
     ThreadPool.QueueUserWorkItem(IncrementSharedResource);
 }
 
-while (ThreadPool.PendingWorkItemCount != 0)
-{
-    Thread.Yield();
-}
-
+Thread.Sleep(1000);
 Console.WriteLine("Final value of sharedResource: " + sharedResource);
 
 Console.WriteLine("Press any key to continue...");
@@ -30,9 +26,9 @@ void IncrementSharedResource(object? state)
 
 /////////////////////////////////////
 
-var filee = File.Open("./test.txt", FileMode.Create);
+var file = File.Open("./test.txt", FileMode.Create);
 
-using var poseHandle = new PoseHandle(filee.SafeFileHandle);
+using var poseHandle = new PoseHandle(file.SafeFileHandle);
 Console.WriteLine("Handle value: " + poseHandle.GetHandle().IsClosed);
 poseHandle.ReleaseHandle();
 Console.WriteLine("Handle value: " + poseHandle.GetHandle().IsClosed);
